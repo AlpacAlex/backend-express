@@ -43,7 +43,7 @@ class DataBaseFile {
             return JSON.parse(tododb); 
     }
     async write(message) {
-        console.log("write...");
+        console.log("begin write...");
         if (message.length < 1)
             return false;// error 422
         const newItem = {
@@ -60,14 +60,16 @@ class DataBaseFile {
         })
         if (!isRepit) {
             try {
-                console.log("Repit...");
+                console.log("No repit message...");
                 data.push(newItem);
+                console.log("write in DataBase...");
                 FileSystem.writeFileSync(this.path, JSON.stringify(data));
                 return newItem;
             } catch (error) {
                 console.log(error, "  <--- error wrie method");
             }
         } else {
+            console.log("repit !!! message...");
             return false;//already write message
         }
         
