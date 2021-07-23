@@ -1,9 +1,8 @@
 const router = require("express").Router();
-const { DataBaseFile } = require("../../config/database");
+const assist = require("../../assistant/assist");
 
 const getTasks = async (req, res, next) => {
-    const DBFile = new DataBaseFile();
-    const todos = await DBFile.read();
+    const todos = await assist.read();
     res.status(200).json(todos);
 }
 

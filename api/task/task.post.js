@@ -1,13 +1,12 @@
 const router = require("express").Router();
-const { DataBaseFile } = require("../../config/database");
+const assist = require("../../assistant/assist");
 
 const postTask = async (req, res, next) => {
     const { id } = req.params;
 
     const message = req.body.name;
-    const DBFile = new DataBaseFile();
-    const todos = await DBFile.write(message);
-    res.status(200).json(todos);
+    const todo = await assist.write(message);
+    res.status(200).json(todo);
 }
 
 router.post("/:id", postTask);

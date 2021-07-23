@@ -1,17 +1,17 @@
 const router = require("express").Router();
-const { DataBaseFile } = require("../../config/database");
+const assist = require("../../assistant/assist");
 
 const patchTask = async (req, res, next) => {
-    const { id } = req.params;
+    const { id, uuid } = req.params;
     if (!req.body)
         return res.status(400);
     //const {} 
-
-    const DBFile = new DataBaseFile();
-    const todos = await DBFile.read();
-    res.status(200).json(todos);
+    const {name, done} = req.body;
+    
+    const upTask = await assist.update(uuid, name, done);
+    res.status(200).json(upTask);
 }
 
-router.patch("/:id", patchTask);
+router.patch("/:id/:uuid", patchTask);
 
 module.exports = router;

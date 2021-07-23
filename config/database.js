@@ -74,8 +74,39 @@ class DataBaseFile {
         }
         
     }
-    async update(uuid, newS, complete) {
-        
+    async update(uuid, newName, newDone) {
+        try {
+            console.log("update...");
+            console.log("data read...");
+            const data = await this.read();
+            console.log(data);
+            const findIdElem = data.findIndex( todo => todo.uuid === uuid );
+            console.log(findIdElem);
+            data[findIdElem].name = newName;
+            data[findIdElem].done = newDone;
+            console.log(data);
+            console.log("data rewrite(update)...");
+            FileSystem.writeFileSync(this.path, JSON.stringify(data));
+            return data[findIdElem];
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    async delete(uuid) {
+        try {
+            console.log("update...");
+            console.log("data read...");
+            const data = await this.read();
+            const findIdElem = data.findIndex( todo => todo.uuid === uuid );
+            data.splice(findIdElem, 1);
+            console.log("data rewrite(update)...");
+            FileSystem.writeFileSync(this.path, JSON.stringify(data));
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 }
 
