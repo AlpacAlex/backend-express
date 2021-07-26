@@ -99,6 +99,8 @@ class DataBaseFile {
             console.log("data read...");
             const data = await this.read();
             const findIdElem = data.findIndex( todo => todo.uuid === uuid );
+            if (findIdElem == -1)
+                return false;
             data.splice(findIdElem, 1);
             console.log("data rewrite(update)...");
             FileSystem.writeFileSync(this.path, JSON.stringify(data));
