@@ -86,7 +86,8 @@ class DataBaseFile {
             data[findIdElem].done = newDone;
             console.log(data);
             console.log("data rewrite(update)...");
-            FileSystem.writeFileSync(this.path, JSON.stringify(data));
+            
+            FileSystem.writeFile(this.path, JSON.stringify(data)).then();
             return data[findIdElem];
         } catch (error) {
             console.log(error);

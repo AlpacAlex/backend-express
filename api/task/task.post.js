@@ -4,7 +4,7 @@ const  { body, validationResult }  = require("express-validator");
 
 const isValid = () => {
     return [
-        body("name").isLength({min: 2}).withMessage("task name must be greater than 1")
+        body("name").isLength({min: 2}).withMessage("task name must be greater than 1"),
     ]
 } 
 
