@@ -20,4 +20,20 @@ async function remove(uuid) {
     return await DBFile.delete(uuid);
 }
 
+async function filterBy(flag) {
+    const filterArr = await read();
+    const alredyFilter = [...filterArr.filter( (todo) => todo.done === (flag ? true : false))];
+    return alredyFilter;
+}
+
+async function orderBy(flag) {
+    const orderArr = await read();
+    const alredyOrder = [...orderArr];
+    alredyOrder.sort( (a, b) => {
+        flag ? Date.parse(a.createdAt) - Date.parse(b.createdAt) :
+        Date.parse(b.createdAt) - Date.parse(a.createdAt)     
+    })
+    return alredyOrder;
+}
+
 module.exports = {read, write, update, remove};
