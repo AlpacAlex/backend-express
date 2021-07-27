@@ -17,9 +17,8 @@ const getTasks = async (req, res, next) => {
         if (typeof orderBy === "undefined") {
             orderBy = "asc";
         }
-        todos.sort( (a, b) =>  { return ( (orderBy === "asc") ? 
-            ( (Date.parse(a.createdAt) - Date.parse(b.createdAt)) ? 1 : -1) : 
-            ( (Date.parse(b.createdAt) - Date.parse(a.createdAt)) ? -1 : 1) )
+        todos.sort( (a, b) =>  { 
+            return ( (orderBy === "asc") ? (Date.parse(a.createdAt) - Date.parse(b.createdAt)) : (Date.parse(b.createdAt) - Date.parse(a.createdAt)))  
         });
         todos = (typeof filterBy === "undefined") ? todos : todos.filter( (todo) => (todo.done === ((filterBy === "done") ? true : false)));
         todos = todos.slice(
