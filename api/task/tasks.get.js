@@ -5,7 +5,7 @@ const LIMIT = 5;
 
 const isValid = () => {
     return [
-        query("page").exists().isInt({ min: 1 }).toInt().withMessage("no page specified"),
+        query("page").exists().withMessage("no exist page").isInt({ min: 1 }).toInt().withMessage("no page specified"),
     ]
 } 
  

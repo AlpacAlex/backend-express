@@ -35,12 +35,29 @@ class DataBaseFile {
             return false;
         }
     }
-    async read() {   
-        const tododb = FileSystem.readFileSync(this.path).toString();
+    async read() {  
+        console.log("begin read..."); 
+        //const tododb = FileSystem.readFileSync(this.path).toString();
+        const readFileAsync = () => {
+            return new Promise( (resolve, reject) => {
+                FileSystem.readFile(this.path, "utf8", (err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                })
+            })
+        }
+
+        const todoRaw = await readFileAsync();
+        const tododb = JSON.parse(todoRaw);
+        //console.log(tododb);
+        console.log("end read...");
         if (!tododb.length) 
             return new Array();
         else
-            return JSON.parse(tododb); 
+            return tododb; 
     }
     async write(message) {
         console.log("begin write...");
@@ -87,7 +104,7 @@ class DataBaseFile {
             console.log(data);
             console.log("data rewrite(update)...");
             
-            FileSystem.writeFile(this.path, JSON.stringify(data)).then();
+            FileSystem.writeFileSync(this.path, JSON.stringify(data))
             return data[findIdElem];
         } catch (error) {
             console.log(error);
