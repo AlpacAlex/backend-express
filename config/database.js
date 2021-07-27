@@ -1,5 +1,6 @@
 const { json } = require("express");
 const FileSystem = require("fs").promises;// for work file system(txt,json)
+const FileSys = require("fs");
 const ospath = require("path");// defines work path
 const { v4: uuidv4 } = require("uuid");
 
@@ -15,10 +16,10 @@ class DataBaseFile {
     }
     async createDB() {
         try {
-            if (FileSystem.existsSync(this.path)) {
+            if (FileSys.existsSync(this.path)) {
                 return true;
             } else {
-                FileSystem.writeFileSync(this.path, "");
+                FileSys.writeFileSync(this.path, "");
                 return true;
             }
         } catch (error) {
@@ -31,7 +32,7 @@ class DataBaseFile {
         //const tododb = FileSystem.readFileSync(this.path).toString();
         const readFileAsync = () => {
             return new Promise( (resolve, reject) => {
-                FileSystem.readFile(this.path, "utf8", (err, data) => {
+                FileSys.readFile(this.path, "utf8", (err, data) => {
                     if (err) {
                         reject(err);
                     } else {
