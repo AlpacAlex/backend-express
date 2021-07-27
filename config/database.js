@@ -54,7 +54,7 @@ class DataBaseFile {
     async write(message) {
         console.log("begin write...");
         if (message.length < 1)
-            return false;// error 422
+            throw "name must greater than 1";
         const newItem = {
             uuid: uuidv4(),
             createdAt: new Date().toISOString(),
@@ -79,40 +79,43 @@ class DataBaseFile {
             }
         } else {
             console.log("repit !!! message...");
-            return false;//already write message
+            throw "name repit, create uniq";
+            //return false;//already write message
         }
         
     }
     async update(uuid, newName, newDone) {
+        
+        console.log("update...");
+        console.log("data read...");
+        const data = await this.read();
+        //console.log(data);
+        const findIdElem = data.findIndex( todo => todo.uuid === uuid );
+        if (findIdElem === -1) 
+            throw "wrong ID";
+        console.log(findIdElem);
+        data[findIdElem].name = newName;
+        data[findIdElem].done = newDone;
+        //console.log(data);
+        console.log("data rewrite(update)...");
         try {
-            console.log("update...");
-            console.log("data read...");
-            const data = await this.read();
-            console.log(data);
-            const findIdElem = data.findIndex( todo => todo.uuid === uuid );
-            console.log(findIdElem);
-            data[findIdElem].name = newName;
-            data[findIdElem].done = newDone;
-            console.log(data);
-            console.log("data rewrite(update)...");
-            
             await FileSystem.writeFile(this.path, JSON.stringify(data))
             return data[findIdElem];
         } catch (error) {
             console.log(error);
-            return false;
         }
     }
     async delete(uuid) {
+        
+        console.log("update...");
+        console.log("data read...");
+        const data = await this.read();
+        const findIdElem = data.findIndex( todo => todo.uuid === uuid );
+        if (findIdElem == -1)
+            throw "wrong ID";
+        data.splice(findIdElem, 1);
+        console.log("data rewrite(update)...");
         try {
-            console.log("update...");
-            console.log("data read...");
-            const data = await this.read();
-            const findIdElem = data.findIndex( todo => todo.uuid === uuid );
-            if (findIdElem == -1)
-                return false;
-            data.splice(findIdElem, 1);
-            console.log("data rewrite(update)...");
             await FileSystem.writeFile(this.path, JSON.stringify(data));
             return true;
         } catch (error) {

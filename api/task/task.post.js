@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const assist = require("../../assistant/assist");
 const  { body, validationResult }  = require("express-validator");
+const { BaseError } = require("../../assistant/ApiError");
 
 const isValid = () => {
     return [
@@ -11,20 +12,22 @@ const isValid = () => {
 
 const postTask = async (req, res, next) => {
     const { id } = req.params;
-
-    const er = validationResult(req);
-    if (er.isEmpty()) {
-        const message = req.body.name;
-        const todo = await assist.write(message);
-        if (todo) {
-            res.status(200).json(todo);
+    try {
+        const er = validationResult(req);
+        if (er.isEmpty()) {
+            const message = req.body.name;
+            try {
+                const todo = await assist.write(message);
+                res.status(200).json(todo);
+            } catch (e) {
+                next(BaseError.Error422(e));
+            }
+            
         } else {
-            res.status(422).json({ errors: "name already exists"});
+            throw er;
         }
-        
-    } else {
-        const firstError = er.errors[0].msg;// если отображать все ошибки, то на фронте из-за разной структуры ответа ошибки придется по разному отображать
-        res.status(400).json({ errors: firstError });
+    } catch (e) {
+        next(BaseError.Error422(e.errors[0].msg));
     }
 }
 
