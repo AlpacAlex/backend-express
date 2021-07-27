@@ -106,7 +106,6 @@ class DataBaseFile {
         }
     }
     async delete(uuid) {
-        
         console.log("update...");
         console.log("data read...");
         const data = await this.read();
@@ -120,6 +119,30 @@ class DataBaseFile {
             return true;
         } catch (error) {
             console.log(error);
+            return false;
+        }
+    }
+}
+
+class DataBasePostgres {
+    constructor(path = "", name = "todos.db") {
+        path = path || ospath.resolve(__dirname, `../db/${name}`);
+        this.path = path;
+        if(this.createDB())
+            console.log("database exist");
+        else
+            console.log("database NO exist");
+    }
+    async createDB() {
+        try {
+            if (FileSys.existsSync(this.path)) {
+                return true;
+            } else {
+                FileSys.writeFileSync(this.path, "");
+                return true;
+            }
+        } catch (error) {
+            console.log(error, "  <--- error database");
             return false;
         }
     }
