@@ -1,16 +1,7 @@
 const { json } = require("express");
-const FileSystem = require("fs");// for work file system(txt,json)
+const FileSystem = require("fs").promises;// for work file system(txt,json)
 const ospath = require("path");// defines work path
 const { v4: uuidv4 } = require("uuid");
-/*
-{
-    "uuid": uuid,
-    "createdAt": Date.now(),
-    "name": task,
-    "done": completed
-}
- */
-
 
 
 class DataBaseFile {
@@ -80,7 +71,7 @@ class DataBaseFile {
                 console.log("No repit message...");
                 data.push(newItem);
                 console.log("write in DataBase...");
-                FileSystem.writeFileSync(this.path, JSON.stringify(data));
+                await FileSystem.writeFile(this.path, JSON.stringify(data));
                 return newItem;
             } catch (error) {
                 console.log(error, "  <--- error wrie method");
@@ -104,7 +95,7 @@ class DataBaseFile {
             console.log(data);
             console.log("data rewrite(update)...");
             
-            FileSystem.writeFileSync(this.path, JSON.stringify(data))
+            await FileSystem.writeFile(this.path, JSON.stringify(data))
             return data[findIdElem];
         } catch (error) {
             console.log(error);
@@ -121,7 +112,7 @@ class DataBaseFile {
                 return false;
             data.splice(findIdElem, 1);
             console.log("data rewrite(update)...");
-            FileSystem.writeFileSync(this.path, JSON.stringify(data));
+            await FileSystem.writeFile(this.path, JSON.stringify(data));
             return true;
         } catch (error) {
             console.log(error);
