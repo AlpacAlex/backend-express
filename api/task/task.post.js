@@ -1,7 +1,10 @@
 const router = require("express").Router();
 const assist = require("../../assistant/assist");
+const {Todos}  = require("../../models");
 const  { body, validationResult }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
+const { v4: uuidv4 } = require("uuid");
+
 
 const isValid = () => {
     return [
@@ -17,7 +20,12 @@ const postTask = async (req, res, next) => {
         if (er.isEmpty()) {
             const message = req.body.name;
             try {
-                const todo = await assist.write(message);
+                const newItem = {
+                    uuid: uuidv4(),
+                    name: message,
+                    done: false
+                }
+                const todo = await Todos.create(newItem);
                 res.status(200).json(todo);
             } catch (e) {
                 next(BaseError.Error422(e));
@@ -31,6 +39,6 @@ const postTask = async (req, res, next) => {
     }
 }
 
-router.post("/:id", isValid(), postTask);
+router.post("/task/:id", isValid(), postTask);
 
 module.exports = router;
