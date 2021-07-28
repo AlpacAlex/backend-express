@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 class DataBaseFile {
     constructor(path = "", name = "todos.json") {
         path = path || ospath.resolve(__dirname, `../db/${name}`);
+        this.folder = ospath.resolve(__dirname, "../db");
         this.path = path;
         if(this.createDB())
             console.log("database exist");
@@ -17,6 +18,10 @@ class DataBaseFile {
     async createDB() {
         try {
             if (FileSys.existsSync(this.path)) {
+                return true;
+            } else if(!FileSys.existsSync(this.folder)) {
+                FileSys.mkdirSync(this.folder);
+                FileSys.writeFileSync(this.path, "");
                 return true;
             } else {
                 FileSys.writeFileSync(this.path, "");
@@ -43,6 +48,8 @@ class DataBaseFile {
         }
 
         const todoRaw = await readFileAsync();
+        if (!todoRaw.length)
+            return new Array();
         const tododb = JSON.parse(todoRaw);
         //console.log(tododb);
         console.log("end read...");
