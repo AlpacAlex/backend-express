@@ -29,7 +29,6 @@ class DataBaseFile {
     }
     async read() {  
         console.log("begin read..."); 
-        //const tododb = FileSystem.readFileSync(this.path).toString();
         const readFileAsync = () => {
             return new Promise( (resolve, reject) => {
                 FileSys.readFile(this.path, "utf8", (err, data) => {
@@ -44,7 +43,6 @@ class DataBaseFile {
 
         const todoRaw = await readFileAsync();
         const tododb = JSON.parse(todoRaw);
-        //console.log(tododb);
         console.log("end read...");
         if (!tododb.length) 
             return new Array();
@@ -80,7 +78,6 @@ class DataBaseFile {
         } else {
             console.log("repit !!! message...");
             throw "name repit, create uniq";
-            //return false;//already write message
         }
         
     }
@@ -89,14 +86,12 @@ class DataBaseFile {
         console.log("update...");
         console.log("data read...");
         const data = await this.read();
-        //console.log(data);
         const findIdElem = data.findIndex( todo => todo.uuid === uuid );
         if (findIdElem === -1) 
             throw "wrong ID";
         console.log(findIdElem);
         data[findIdElem].name = newName;
         data[findIdElem].done = newDone;
-        //console.log(data);
         console.log("data rewrite(update)...");
         try {
             await FileSystem.writeFile(this.path, JSON.stringify(data))
@@ -119,30 +114,6 @@ class DataBaseFile {
             return true;
         } catch (error) {
             console.log(error);
-            return false;
-        }
-    }
-}
-
-class DataBasePostgres {
-    constructor(path = "", name = "todos.db") {
-        path = path || ospath.resolve(__dirname, `../db/${name}`);
-        this.path = path;
-        if(this.createDB())
-            console.log("database exist");
-        else
-            console.log("database NO exist");
-    }
-    async createDB() {
-        try {
-            if (FileSys.existsSync(this.path)) {
-                return true;
-            } else {
-                FileSys.writeFileSync(this.path, "");
-                return true;
-            }
-        } catch (error) {
-            console.log(error, "  <--- error database");
             return false;
         }
     }
