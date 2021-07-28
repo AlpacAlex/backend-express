@@ -1,6 +1,7 @@
 const express = require('express');
 const { initMainRouter } = require("./config/root-routes");
 const {handleError} = require("./assistant/ApiError");
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
