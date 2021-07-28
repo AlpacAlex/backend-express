@@ -15,13 +15,13 @@ class BaseError extends Error {
         this.description = description;
         Error.captureStackTrace(this);
     }
-    static Error404(msg) {
+    static NotFound(msg) {
         return new BaseError(msg, httpStatusCodes.NOT_FOUND, 'Not found.');
     }
-    static Error400(msg) {
+    static BadRequest(msg) {
         return new BaseError(msg, httpStatusCodes.BAD_REQUEST, 'invalid request.');
     }
-    static Error422(msg) {
+    static UnprocessableEntity (msg) {
         return new BaseError(msg, httpStatusCodes.INVALID_REQEST, 'Invalid fields in request.');
     }
     static AnyError(msg, statusCode, description) {
@@ -37,6 +37,12 @@ function handleError(err, req, res, next) {
         status: description,
         statusCode,
         message
+        });
+    } else if(typeof err.errors === "object") {
+        res.status(422).json({
+            status: "validotor error",
+            statusCode: 422,
+            message: err.errors[0].msg
         });
     } else {
         res.status(500).json({ error: "Internal Server Error" })
