@@ -13,25 +13,21 @@ const isValid = () => {
 } 
 
 const patchTask = async (req, res, next) => {
-    const { id, uuid } = req.params;
+    const { uuid } = req.params;
     const {name, done} = req.body;
-    try {
-        const er = validationResult(req);
-        if (er.isEmpty()) {
-            try {
-                const upTask = await assist.update(uuid, name, done);
-                res.status(200).json(upTask);
-            } catch (e) {
-                next(BaseError.Error422(e));
-            }
-        } else {
-            throw er;
+    const er = validationResult(req);
+    if (er.isEmpty()) {
+        try {
+            const upTask = await assist.update(uuid, name, done);
+            res.status(200).json(upTask);
+        } catch (e) {
+            next(BaseError.UnprocessableEntity(e));
         }
-    } catch (e) {
-        next(BaseError.Error422(e.errors[0].msg));
+    } else {
+        next(er);
     }
 }
 
-router.patch("/:id/:uuid", isValid(), patchTask);
+router.patch("/task/:id/:uuid", isValid(), patchTask);
 
 module.exports = router;

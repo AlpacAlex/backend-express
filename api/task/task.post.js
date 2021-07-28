@@ -11,26 +11,19 @@ const isValid = () => {
 
 
 const postTask = async (req, res, next) => {
-    const { id } = req.params;
-    try {
-        const er = validationResult(req);
-        if (er.isEmpty()) {
-            const message = req.body.name;
-            try {
-                const todo = await assist.write(message);
-                res.status(200).json(todo);
-            } catch (e) {
-                next(BaseError.Error422(e));
-            }
-            
-        } else {
-            throw er;
+    const er = validationResult(req);
+    if (er.isEmpty()) {
+        const message = req.body.name;
+        try {
+            const todo = await assist.write(message);
+            res.status(200).json(todo);
+        } catch (e) {
+            next(BaseError.UnprocessableEntity(e));
         }
-    } catch (e) {
-        next(BaseError.Error422(e.errors[0].msg));
+    } else {
+        next(er);
     }
 }
-
-router.post("/:id", isValid(), postTask);
+router.post("/task/:id", isValid(), postTask);
 
 module.exports = router;
