@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const assist = require("../../assistant/assist");
-const  { body, validationResult, param }  = require("express-validator");
+const  { validationResult, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
 
 const isValid = () => {
