@@ -16,8 +16,15 @@ const isValid = () => {
 const postTask = async (req, res, next) => {
     const er = validationResult(req);
     if (er.isEmpty()) {
-        const message = req.body.name;
+        const message = req.body.name; 
         try {
+            const repitTodo = await Todos.findAll({
+                where: {
+                    name: message
+                }
+            })
+            if (repitTodo.length) 
+                throw BaseError.UnprocessableEntity("name repit, create uniq");
             const newItem = {
                 uuid: uuidv4(),
                 name: message,
@@ -26,7 +33,7 @@ const postTask = async (req, res, next) => {
             const todo = await Todos.create(newItem);
             res.status(200).json(todo);
         } catch (e) {
-            next(BaseError.UnprocessableEntity(e));
+            next(e);
         }
     } else {
         next(er);

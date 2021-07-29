@@ -2,6 +2,7 @@ const router = require("express").Router();
 const assist = require("../../assistant/assist");
 const  { validationResult, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
+const {Todos}  = require("../../models");
 
 const isValid = () => {
     return [
@@ -15,10 +16,14 @@ const deleteTask = async (req, res, next) => {
     const er = validationResult(req);
     if (er.isEmpty()) {
         try {
-            await assist.remove(uuid);
+            await Todos.destroy({
+                where: {
+                    uuid: uuid
+                }
+            });
             res.sendStatus(204);
         } catch (e) {
-            next(BaseError.UnprocessableEntity(e));
+            next(e);
         }    
     } else {
         next(er);

@@ -26,7 +26,7 @@ const getTasks = async (req, res, next) => {
             res.status(200).json(chosenTodos);
         } catch (e) {
             console.log(e);
-            next(BaseError.UnprocessableEntity(e));
+            next(e);
         }
     } else {
         console.log(er);

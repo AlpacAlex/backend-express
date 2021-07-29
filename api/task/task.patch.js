@@ -19,15 +19,26 @@ const patchTask = async (req, res, next) => {
     const er = validationResult(req);
     if (er.isEmpty()) {
         try {
-            const upTask = await Todos.update({uuid: uuid}, {
+            const repitTodo = await Todos.findAll({
                 where: {
-                    name: name,
-                    done: done
+                    name: name
+                }
+            });
+            if (repitTodo.length) 
+                throw BaseError.UnprocessableEntity("name repit, create uniq");
+            await Todos.update({name: name, done: done}, {
+                where: {
+                    uuid: uuid
+                }
+            });
+            const upTask = await Todos.findAll({
+                where: {
+                    uuid: uuid
                 }
             });
             res.status(200).json(upTask);
         } catch (e) {
-            next(BaseError.UnprocessableEntity(e));
+            next(e);
         }
     } else {
         next(er);
