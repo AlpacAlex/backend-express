@@ -16,7 +16,8 @@ const getTasks = async (req, res, next) => {
         try {
             const {page, orderBy, filterBy} = req.query;
             //const where = filterBy ? ((filterBy==="done") ? {done: true} : {done: false}) : null;
-            const where = filterBy && ((filterBy==="done") ? {done: true} : {done: false});
+            //const where = filterBy && ((filterBy==="done") ? {done: true} : {done: false});
+            const where = filterBy && {done: filterBy === "done"};
 
             const chosenTodos = await Todos.findAndCountAll({
                 limit: LIMIT,
