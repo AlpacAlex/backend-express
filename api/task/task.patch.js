@@ -2,6 +2,7 @@ const router = require("express").Router();
 const assist = require("../../assistant/assist");
 const  { body, validationResult, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
+const {Todos}  = require("../../models");
 
 
 const isValid = () => {
@@ -13,13 +14,15 @@ const isValid = () => {
 } 
 
 const patchTask = async (req, res, next) => {
-    const { id, uuid } = req.params;
+    const { uuid } = req.params;
     const {name, done} = req.body;
     try {
         const er = validationResult(req);
         if (er.isEmpty()) {
             try {
-                const upTask = await assist.update(uuid, name, done);
+                const upTask = await Todos.update({uuid: uuid}, {
+
+                });
                 res.status(200).json(upTask);
             } catch (e) {
                 next(BaseError.Error422(e));
