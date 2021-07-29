@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const assist = require("../../assistant/assist");
 const  { body, validationResult, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
 const {Todos}  = require("../../models");
@@ -21,7 +20,8 @@ const patchTask = async (req, res, next) => {
         try {
             const repitTodo = await Todos.findAll({
                 where: {
-                    name: name
+                    name: name,
+                    done: done
                 }
             });
             if (repitTodo.length) 

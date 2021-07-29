@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const assist = require("../../assistant/assist");
 const {Todos}  = require("../../models");
 const  { body, validationResult }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");

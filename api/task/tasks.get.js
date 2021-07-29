@@ -1,8 +1,6 @@
 const router = require("express").Router();
-//const assist = require("../../assistant/assist");
 const {Todos}  = require("../../models");
 const  { query, validationResult }  = require("express-validator");
-const { BaseError } = require("../../assistant/ApiError");
 const LIMIT = 5;
 
 const isValid = () => {
@@ -17,12 +15,15 @@ const getTasks = async (req, res, next) => {
     if (er.isEmpty()) {
         try {
             const {page, orderBy, filterBy} = req.query;
+            //const where = filterBy ? ((filterBy==="done") ? {done: true} : {done: false}) : null;
+            const where = filterBy && ((filterBy==="done") ? {done: true} : {done: false});
+
             const chosenTodos = await Todos.findAndCountAll({
                 limit: LIMIT,
                 offset: (page - 1) * LIMIT,
                 order: [["createdAt", `${orderBy}`]],
-                //where: false
-            })
+                where,
+            });
             res.status(200).json(chosenTodos);
         } catch (e) {
             console.log(e);
