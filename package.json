@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-validator": "^6.12.1",
     "klaw-sync": "^6.0.0",
@@ -26,7 +27,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
     "sequelize-cli": "^6.2.0"
   }
 }
