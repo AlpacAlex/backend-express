@@ -30,6 +30,6 @@ const deleteTask = async (req, res, next) => {
     
 }
 
-router.delete("/:id/:uuid", isValid(), deleteTask);
+router.delete("/task/:id/:uuid", isValid(), deleteTask);
 
 module.exports = router;

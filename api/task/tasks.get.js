@@ -39,6 +39,6 @@ const getTasks = async (req, res, next) => {
     
 }
  
-router.get("/", isValid(), getTasks);
+router.get("/tasks", isValid(), getTasks);
  
 module.exports = router;

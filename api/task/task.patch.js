@@ -32,6 +32,6 @@ const patchTask = async (req, res, next) => {
     }
 }
 
-router.patch("/:id/:uuid", isValid(), patchTask);
+router.patch("/task/:id/:uuid", isValid(), patchTask);
 
 module.exports = router;
