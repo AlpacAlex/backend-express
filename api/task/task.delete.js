@@ -12,22 +12,17 @@ const isValid = () => {
 
 const deleteTask = async (req, res, next) => {
     const { id, uuid } = req.params;
-    try {
-        const er = validationResult(req);
-        if (er.isEmpty()) {
-            try {
-                await assist.remove(uuid);
-                res.sendStatus(204);
-            } catch (e) {
-                next(BaseError.Error422(e));
-            }    
-        } else {
-            throw er;
-        }
-    } catch (e) {
-        next(BaseError.Error422(e.errors[0].msg));
+    const er = validationResult(req);
+    if (er.isEmpty()) {
+        try {
+            await assist.remove(uuid);
+            res.sendStatus(204);
+        } catch (e) {
+            next(BaseError.UnprocessableEntity(e));
+        }    
+    } else {
+        next(er);
     }
-    
 }
 
 router.delete("/task/:id/:uuid", isValid(), deleteTask);

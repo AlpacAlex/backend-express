@@ -15,19 +15,18 @@ class BaseError extends Error {
         this.description = description;
         Error.captureStackTrace(this);
     }
-    static Error404(msg) {
+    static NotFound(msg) {
         return new BaseError(msg, httpStatusCodes.NOT_FOUND, 'Not found.');
     }
-    static Error400(msg) {
+    static BadRequest(msg) {
         return new BaseError(msg, httpStatusCodes.BAD_REQUEST, 'invalid request.');
     }
-    static Error422(msg) {
+    static UnprocessableEntity (msg) {
         return new BaseError(msg, httpStatusCodes.INVALID_REQEST, 'Invalid fields in request.');
     }
     static AnyError(msg, statusCode, description) {
         return new BaseError(msg, statusCode, description);
     }
-    
 }
 
 function handleError(err, req, res, next) {

@@ -13,30 +13,25 @@ const isValid = () => {
 } 
  
 const getTasks = async (req, res, next) => {
-    try {
-        const er = validationResult(req);
-        if (er.isEmpty()) {
-            try {
-                const {page, orderBy, filterBy} = req.query;
-                const chosenTodos = await Todos.findAndCountAll({
-                    limit: LIMIT,
-                    offset: (page - 1) * LIMIT,
-                    order: [["createdAt", `${orderBy}`]],
-                    //where: false
-                })
-                res.status(200).json(chosenTodos);
-            } catch (e) {
-                console.log(e);
-                next(BaseError.Error400("myerror"));
-            }
-        } else {
-            throw er;
+    const er = validationResult(req);
+    if (er.isEmpty()) {
+        try {
+            const {page, orderBy, filterBy} = req.query;
+            const chosenTodos = await Todos.findAndCountAll({
+                limit: LIMIT,
+                offset: (page - 1) * LIMIT,
+                order: [["createdAt", `${orderBy}`]],
+                //where: false
+            })
+            res.status(200).json(chosenTodos);
+        } catch (e) {
+            console.log(e);
+            next(BaseError.UnprocessableEntity(e));
         }
-    } catch (e) {
-        console.log(e);
-        next(BaseError.Error422(e.errors[0].msg))
+    } else {
+        console.log(er);
+        next(er);
     }
-    
 }
  
 router.get("/tasks", isValid(), getTasks);

@@ -14,28 +14,22 @@ const isValid = () => {
 
 
 const postTask = async (req, res, next) => {
-    const { id } = req.params;
-    try {
-        const er = validationResult(req);
-        if (er.isEmpty()) {
-            const message = req.body.name;
-            try {
-                const newItem = {
-                    uuid: uuidv4(),
-                    name: message,
-                    done: false
-                }
-                const todo = await Todos.create(newItem);
-                res.status(200).json(todo);
-            } catch (e) {
-                next(BaseError.Error422(e));
+    const er = validationResult(req);
+    if (er.isEmpty()) {
+        const message = req.body.name;
+        try {
+            const newItem = {
+                uuid: uuidv4(),
+                name: message,
+                done: false
             }
-            
-        } else {
-            throw er;
+            const todo = await Todos.create(newItem);
+            res.status(200).json(todo);
+        } catch (e) {
+            next(BaseError.UnprocessableEntity(e));
         }
-    } catch (e) {
-        next(BaseError.Error422(e.errors[0].msg));
+    } else {
+        next(er);
     }
 }
 
