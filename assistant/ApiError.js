@@ -38,6 +38,12 @@ function handleError(err, req, res, next) {
         statusCode,
         message
         });
+    } else if(typeof err.errors === "object") {
+        res.status(422).json({
+            status: "validotor error",
+            statusCode: 422,
+            message: err.errors[0].msg
+        });
     } else {
         res.status(500).json({ error: "Internal Server Error" })
     }
