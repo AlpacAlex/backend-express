@@ -31,6 +31,7 @@ class BaseError extends Error {
 }
 
 function handleError(err, req, res, next) {
+    console.log(err);
     if(err instanceof BaseError) {
         const { statusCode, message, description } = err;
         res.status(statusCode).json({
