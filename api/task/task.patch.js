@@ -20,12 +20,17 @@ const patchTask = async (req, res, next) => {
         try {
             const repitTodo = await Todos.findAll({
                 where: {
-                    name: name,
-                    done: done
+                    uuid: uuid,
                 }
             });
-            if (repitTodo.length) 
+            const repitName = await Todos.findAll({
+                where: {
+                    name: name,
+                }
+            });
+            if (repitTodo[0].name !== repitName[0].name)
                 throw BaseError.UnprocessableEntity("name repit, create uniq");
+                
             await Todos.update({name: name, done: done}, {
                 where: {
                     uuid: uuid
