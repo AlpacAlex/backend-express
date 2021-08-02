@@ -1,4 +1,5 @@
 const { DataBaseFile } = require("../config/database");
+const  { validationResult }  = require("express-validator");
 
 async function read() {
     const DBFile = new DataBaseFile();
@@ -20,4 +21,13 @@ async function remove(uuid) {
     return await DBFile.delete(uuid);
 }
 
-module.exports = {read, write, update, remove };
+function isValidError(req, next) {
+    const er = validationResult(req);
+    if(!er.isEmpty()) {
+        next(er);
+        return true;
+    }
+    return false;
+}
+
+module.exports = {read, write, update, remove, isValidError };

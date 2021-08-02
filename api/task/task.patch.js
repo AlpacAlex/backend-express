@@ -1,7 +1,8 @@
 const router = require("express").Router();
-const  { body, validationResult, param }  = require("express-validator");
+const  { body, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
 const {Todos}  = require("../../models");
+const {isValidError} = require("../../assistant/assist");
 
 
 const isValid = () => {
@@ -15,39 +16,42 @@ const isValid = () => {
 const patchTask = async (req, res, next) => {
     const { uuid } = req.params;
     const {name, done} = req.body;
-    const er = validationResult(req);
-    if (er.isEmpty()) {
-        try {
-            const repitTodo = await Todos.findAll({
-                where: {
-                    uuid: uuid,
-                }
-            });
-            const repitName = await Todos.findAll({
-                where: {
-                    name: name,
-                }
-            });
-            if (repitTodo[0].name !== repitName[0].name)
-                throw BaseError.UnprocessableEntity("name repit, create uniq");
-                
-            await Todos.update({name: name, done: done}, {
-                where: {
-                    uuid: uuid
-                }
-            });
-            const upTask = await Todos.findAll({
-                where: {
-                    uuid: uuid
-                }
-            });
-            res.status(200).json(upTask);
-        } catch (e) {
-            next(e);
-        }
-    } else {
-        next(er);
+    if (isValidError(req, next))
+        return;
+    try {
+        const repitTodo = await Todos.findOne({
+            where: {
+                uuid: uuid,
+            }
+        });
+        const repitName = await Todos.findOne({
+            where: {
+                name: name,
+            }
+        });
+        if (repitTodo.name !== repitName.name)
+            throw BaseError.UnprocessableEntity("name repit, create uniq");
+            
+        const result = await Todos.update({name: name, done: done}, {
+            where: {
+                uuid: uuid
+            },
+            returning: true,
+            plain: true
+        });
+        //////////////////////////////
+        console.log(result);
+
+        const upTask = await Todos.findOne({
+            where: {
+                uuid: uuid
+            }
+        });
+        res.status(200).json(upTask);
+    } catch (e) {
+        next(e);
     }
+
 
 }
 

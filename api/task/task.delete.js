@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const assist = require("../../assistant/assist");
-const  { validationResult, param }  = require("express-validator");
+const  { param }  = require("express-validator");
 const {Todos}  = require("../../models");
+const {isValidError} = require("../../assistant/assist");
+
 
 const isValid = () => {
     return [
@@ -12,21 +14,18 @@ const isValid = () => {
 
 const deleteTask = async (req, res, next) => {
     const { id, uuid } = req.params;
-    const er = validationResult(req);
-    if (er.isEmpty()) {
-        try {
-            await Todos.destroy({
-                where: {
-                    uuid: uuid
-                }
-            });
-            res.sendStatus(204);
-        } catch (e) {
-            next(e);
-        }    
-    } else {
-        next(er);
-    }
+    if (isValidError(req, next))
+        return;
+    try {
+        await Todos.destroy({
+            where: {
+                uuid: uuid
+            }
+        });
+        res.sendStatus(204);
+    } catch (e) {
+        next(e);
+    }    
 }
 
 router.delete("/task/:id/:uuid", isValid(), deleteTask);
