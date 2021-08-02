@@ -19,18 +19,18 @@ const patchTask = async (req, res, next) => {
     if (isValidError(req, next))
         return;
     try {
-        const repitTodo = await Todos.findOne({
+        const repeatTodo = await Todos.findOne({
             where: {
                 uuid: uuid,
             }
         });
-        const repitName = await Todos.findOne({
+        const repeatName = await Todos.findOne({
             where: {
                 name: name,
             }
         });
-        if (repitTodo.name !== repitName.name)
-            throw BaseError.UnprocessableEntity("name repit, create uniq");
+        if (repeatTodo.name !== repeatName.name)
+            throw BaseError.UnprocessableEntity("name repeat, create uniq");
             
         const result = await Todos.update({name: name, done: done}, {
             where: {
@@ -39,7 +39,7 @@ const patchTask = async (req, res, next) => {
             returning: true,
             plain: true
         });
-        //////////////////////////////
+        //////////////////////////////check
         console.log(result);
 
         const upTask = await Todos.findOne({
