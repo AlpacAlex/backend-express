@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const {Model} = require('sequelize');
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -15,11 +15,24 @@ module.exports = (sequelize, DataTypes) => {
   };
   users.init({
     login: DataTypes.STRING,
-    password: DataTypes.STRING,
-    userId: DataTypes.STRING
+    password: {
+      type: DataTypes.STRING,
+      set(value) {
+        // Storing passwords in plaintext in the database is terrible.
+        // Hashing the value with an appropriate cryptographic hash function is better.
+        this.setDataValue('password', value);
+      }
+    }
   }, {
     sequelize,
     modelName: 'users',
   });
+
+  users.beforeCreate( async (users) => {
+    const salt = await bcrypt.genSalt(9227);
+    const hashpass = await bcrypt.hash(users.password, salt);
+    users.password = hashpass;
+  });
+
   return users;
 };

@@ -25,6 +25,7 @@ router.post("/auth/signin",
             const validPass = await bcrypt.compare(password, user.password);
             res.status(200).json({ userId: user.userId  });
         } catch (e) {
+            console.log(e);
             next(e);
         }
     }

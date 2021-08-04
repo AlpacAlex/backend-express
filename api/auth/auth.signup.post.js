@@ -26,12 +26,12 @@ router.post("/auth/signup",
             const hashpass = await bcrypt.hash(password, salt);
             const newItem = {
                 login: login,
-                password: hashpass,
-                userId: uuidv4()
+                password: password,
             }
             const user = await users.create(newItem);
-            res.status(200).json({ userId: user.userId  });
+            res.status(200).json({ userId: user.password  });
         } catch (e) {
+            console.log(e);
             next(e);
         }
     }
