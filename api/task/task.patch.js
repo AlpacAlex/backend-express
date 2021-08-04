@@ -3,9 +3,11 @@ const  { body, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
 const {Todos}  = require("../../models");
 const {isValidError} = require("../../assistant/assist");
+const verifyToken = require("../../assistant/auth");
 
 
-router.patch("/task/:id/:uuid", 
+router.patch("/task/:uuid",
+    verifyToken, 
     body("name").isLength({min: 2}).withMessage("task name must be greater than 1"),
     param("id").exists().withMessage("ID not found"),
     param("uuid").exists().withMessage("uuid is empty"), 
