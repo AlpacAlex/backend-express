@@ -2,11 +2,13 @@ const router = require("express").Router();
 const {Todos}  = require("../../models");
 const  { query }  = require("express-validator");
 const {isValidError} = require("../../assistant/assist");
+const verifyToken = require("../../assistant/auth");
 
 
 const LIMIT = 5;
 
-router.get("/tasks/:id", 
+router.get("/tasks",
+    verifyToken,
     query("page").exists().withMessage("no exist page in get reqest").isInt({ min: 1 }).toInt().withMessage("no page specified"),
     query("orderBy").default("asc"), 
     async (req, res, next) => {

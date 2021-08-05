@@ -1,12 +1,11 @@
 const router = require("express").Router();
-const assist = require("../../assistant/assist");
 const  { param }  = require("express-validator");
 const {Todos}  = require("../../models");
 const {isValidError} = require("../../assistant/assist");
+const verifyToken = require("../../assistant/auth");
 
-
-router.delete("/task/:id/:uuid", 
-    param("id").exists().withMessage("ID not found"),
+router.delete("/task/:uuid",
+    verifyToken,
     param("uuid").exists().withMessage("uuid is empty"), 
     async (req, res, next) => {
         const { id, uuid } = req.params;

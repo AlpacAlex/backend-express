@@ -3,11 +3,12 @@ const  { body, param }  = require("express-validator");
 const { BaseError } = require("../../assistant/ApiError");
 const {Todos}  = require("../../models");
 const {isValidError} = require("../../assistant/assist");
+const verifyToken = require("../../assistant/auth");
 
 
-router.patch("/task/:id/:uuid", 
+router.patch("/task/:uuid",
+    verifyToken, 
     body("name").isLength({min: 2}).withMessage("task name must be greater than 1"),
-    param("id").exists().withMessage("ID not found"),
     param("uuid").exists().withMessage("uuid is empty"), 
     async (req, res, next) => {
         const { uuid } = req.params;
@@ -15,7 +16,7 @@ router.patch("/task/:id/:uuid",
         if (isValidError(req, next))
             return;
         try {
-            const repeatTodo = await Todos.findOne({
+            const currentTodo = await Todos.findOne({
                 where: {
                     uuid: uuid,
                 }
@@ -25,24 +26,17 @@ router.patch("/task/:id/:uuid",
                     name: name,
                 }
             });
-            if (repeatTodo.name !== repeatName.name)
+            if (repeatName && (currentTodo.name === repeatName.name))
                 throw BaseError.UnprocessableEntity("name repeat, create uniq");
                 
-            //проверить на возвращение !!!!
             const result = await Todos.update({name: name, done: done}, {
                 where: {
                     uuid: uuid
                 },
-                returning: true,//новый параметр
-                plain: true
+                returning: true,
             });
-            console.log(result);
-            const upTask = await Todos.findOne({
-                where: {
-                    uuid: uuid
-                }
-            });
-            res.status(200).json(upTask);
+
+            res.status(200).json(result[1][0]);
         } catch (e) {
             next(e);
         }  
