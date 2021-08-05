@@ -22,16 +22,14 @@ router.post("/auth/signup",
             })
             if (existUser) 
                 throw BaseError.UnprocessableEntity("this login already exists");
-            const salt = await bcrypt.genSalt(9227);
-            const hashpass = await bcrypt.hash(password, salt);
-            const newItem = {
+            const newUser = {
                 login: login,
-                password: hashpass,
-                userId: uuidv4()
+                password: password,
             }
-            const user = await users.create(newItem);
-            res.status(200).json({ userId: user.userId  });
+            const user = await users.create(newUser);
+            res.status(200).json({ userlogin: user.login  });
         } catch (e) {
+            console.log(e);
             next(e);
         }
     }
